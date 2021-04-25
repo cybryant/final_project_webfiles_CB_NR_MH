@@ -1,0 +1,136 @@
+/* Style.css for map of GeoJSON data for Change in Urbanization, 1960-2017; Author:Cherie Bryant, 2021*/
+
+body {
+    background-color: tan;
+}
+
+#map {
+    height: 500px;
+    border: solid peru 3px;
+    border-radius: 5px;
+}
+
+h1 {
+    text-align: center;
+    font-family: Helvetica;
+    background-color: gray;
+    color: cornsilk;
+    margin-bottom: 25px;
+    line-height: 2;
+}
+
+h6 {
+    font-family: 'Trebuchet MS';
+}
+
+h5   {
+    font-family: 'Trebuchet MS';
+    font-size: 20px;
+    margin-right: 20px;
+    margin-left: 20px;
+    font-style: normal;
+    font-weight: normal;
+}
+
+h4   {
+    font-family: 'Trebuchet MS';
+    font-size: 30px;
+}
+
+.leaflet-popup-content p {
+    margin: 0.2em 0;
+}
+
+#sequence-controls {
+    width: 100%;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    margin-left: 150;
+    margin-right: 150;
+    display: inline-block;
+    vertical-align: center;
+    text-align: center;
+    line-height: 42px;
+}
+
+.range-slider {
+    width: 30%;
+    margin-left: 0;
+    margin-left: 0;
+}
+
+#forward {
+    float: right;
+    border: 2px solid peru;
+    border-radius: 5px;
+    display:inline-block;
+    margin-right: 325px
+}
+
+#reverse {
+    float: left;
+    border: 2px solid peru;
+    border-radius: 5px;
+    display:inline-block;
+    margin-left: 325px
+}
+
+.legend-control-container {
+    width: 200px;
+    height: 90px;
+    background-color: rgba(255,255,255,0.8);
+    padding: 5px;
+    line-height: 35px;
+    text-align: center;
+    border: solid gray 1px;
+    border-radius: 10px;
+    font-family: 'Trebuchet MS';
+    font-weight: bold;
+}
+
+#temporal-legend{
+    font-size: 18px;
+    text-align: center;
+    font-weight: bold;
+    
+}
+
+
+/* FOR USE IF ADD FILTER BUTTONS
+.menu-ui {
+  background:#fff;
+  position:absolute;
+  top:515px;right:10px;
+  z-index:1;
+  border-radius:3px;
+  width:120px;
+  border:1px solid rgba(0,0,0,0.4);
+  }
+  .menu-ui a {
+    font-size:13px;
+    color:#404040;
+    display:block;
+    margin:0;padding:0;
+    padding:10px;
+    text-decoration:none;
+    border-bottom:1px solid rgba(0,0,0,0.25);
+    text-align:center;
+    }
+    .menu-ui a:first-child {
+      border-radius:3px 3px 0 0;
+      }
+    .menu-ui a:last-child {
+      border:none;
+      border-radius:0 0 3px 3px;
+      }
+    .menu-ui a:hover {
+      background:#f8f8f8;
+      color:#404040;
+      }
+    .menu-ui a.active,
+    .menu-ui a.active:hover {
+      background:#3887BE;
+      color:#FFF;
+      }
+
+
