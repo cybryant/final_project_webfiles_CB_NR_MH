@@ -143,7 +143,10 @@ function getData(map){
         }
     });
     //call function to create overlays
-    createOverlays(map);
+    //createOverlays(map);
+    
+    //call NEW FUNCTION TO CREATE OVERLAYS
+    createNewOverlays(map);
     
 
 }//end getData()
@@ -207,9 +210,6 @@ function colorUnits(data, map, style){
 }//End colorUnits()
 */
 
-
-
-
 //// EXAMPLE CODE FOR OVERLAYS
 //Create overlay for most and least urbanized
 function createOverlays(map){
@@ -268,3 +268,84 @@ function createOverlays(map){
 
         L.control.layers(null, overlayMaps).addTo(map);
 }//End createOverlays();
+
+
+//Create overlay for most and least urbanized
+function createNewOverlays(map){
+    
+    //create Dollar Tree layer
+    var dollarTreeData = 'data/all_DollarTree.geojson';    
+    var dollarTreeStores = L.geoJson(null, {
+            pointToLayer: function(feature, latlng) {		
+				return L.circleMarker(latlng, {
+				radius: 4,
+				opacity: .5,
+                fillColor: 'orange',    
+				fillOpacity: 0.8
+				});
+            },	
+    });
+    
+    //create Dollar General layer
+    var dollarGenData = 'data/all_DollarGeneral.geojson';    
+    var dollarGenStores = L.geoJson(null, {
+            pointToLayer: function(feature, latlng) {		
+				return L.circleMarker(latlng, {
+				radius: 4,
+				opacity: .5,
+                fillColor: 'purple',    
+				fillOpacity: 0.8
+				});
+            },	
+    });
+    
+    //create Family Dollar layer
+    var famDollarData = 'data/all_FamilyDollar.geojson';    
+    var famDollarStores = L.geoJson(null, {
+            pointToLayer: function(feature, latlng) {		
+				return L.circleMarker(latlng, {
+				radius: 4,
+				opacity: .5,
+                fillColor: 'green',    
+				fillOpacity: 0.8
+				});
+            },	
+    });
+    
+    //get data and load layers into overlay control
+	//$.getJSON(dollarTreeData, function(dataDT) {
+        //dollarTreeStores.addData(dataDT).addTo(map);
+        //famDollarStores.addData(dataFD).addTo(map);        
+        //var overlays = {
+            //"Dollar Tree": dollarTreeStores.addData(dataDT),
+            //"Dollar General": dollarGenStores.addData(dataDG)
+            //"Family Dollar": famDollarStores.addData(dataFD)
+            //};
+        //L.control.layers(null, overlays).addTo(map);
+	//});
+    
+     $.getJSON(dollarGenData, function(dataDG) {
+        return dollarGenStores.addData(dataDG);
+	});
+    
+    $.getJSON(dollarTreeData, function(dataDT) {
+        return dollarTreeStores.addData(dataDT);
+	});	
+     
+    $.getJSON(famDollarData, function(dataFD) {
+        return famDollarStores.addData(dataFD);
+	});	
+    
+    var overlays = {
+        "Dollar Tree": dollarTreeStores,
+        "Dollar General": dollarGenStores,
+        "Family Dollar": famDollarStores
+    };
+    
+    L.control.layers(null, overlays).addTo(map);
+	//});
+    
+}
+
+
+
