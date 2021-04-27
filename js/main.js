@@ -324,13 +324,13 @@ function createNewOverlays(map){
         //L.control.layers(null, overlays).addTo(map);
 	//});
     
-     $.getJSON(dollarGenData, function(dataDG) {
-        return dollarGenStores.addData(dataDG);
-	});
-    
     $.getJSON(dollarTreeData, function(dataDT) {
         return dollarTreeStores.addData(dataDT);
 	});	
+    
+     $.getJSON(dollarGenData, function(dataDG) {
+        return dollarGenStores.addData(dataDG);
+	});
      
     $.getJSON(famDollarData, function(dataFD) {
         return famDollarStores.addData(dataFD);
