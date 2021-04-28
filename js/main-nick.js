@@ -1,12 +1,12 @@
-/* Main.js for Geog575 Final Project, Dollar Chains; Author:Cherie Bryant, 2021*/
+/* Main.js for map of GeoJSON data for Change in Urbanization, 1960-2017; Author:Cherie Bryant, 2021*/
 
 //Instantiate the Leaflet map
 function createMap(){
     //create the map
-	var map = L.map('map', {
-		center: [37.8, -96],
-		zoom: 4
-	});
+    var map = L.map('map', {
+        center: [37.8, -96],
+        zoom: 4
+    });
 
     // access mapbox tiles
     L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
@@ -29,7 +29,8 @@ function getData(map){
     $.ajax("data/merge_states_5indicators.geojson", {
         dataType: "json",
         success: function(data){
- 
+            console.log(data)
+
             function getColor(d) {
                 return  d > 40 ? '#800026' :
                         d > 35  ? '#BD0026' :
@@ -40,7 +41,6 @@ function getData(map){
                         d > 10   ? '#FED976' :
                         '#FFEDA0';
             } //end getColor()
-            
             
             //create a legend
             var legend = L.control({position: 'bottomright'});
@@ -60,85 +60,17 @@ function getData(map){
             
             legend.addTo(map);
             
-            //the info control
+
+            // The info control
             var info = L.control();
             info.onAdd = function (map) {
                 this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
-                //this.update(); (COMMENTED OUT BY NICK)
+                // this.update();
                 return this._div;
             };
-            
-            info.addTo(map); //ADDED IN BY NICK
-
-//THIS IS ALL MOVING INTO THE BUTTON FUNCTIONS, BUT KEEPING HERE SO I CAN GO BACK AND CREATE A SINGLE FUNCTION INSTEAD OF COPYING 5 TIMES
-/*
-            //style the choropleth units
-            function style(feature) {
-                return {
-                    fillColor: getColor(Number(feature.properties.PctAdultsObese19)),
-                    weight: 2,
-                    opacity: 1,
-                    color: 'white',
-                    strokecolor: "#000000",
-                    dashArray: '3',
-                    fillOpacity: 0.7
-                };
-            } //end style()
-            
-            var geojson;
-            
-            //create highlight of state/county when hover
-            function highlightFeature(e) {
-                var layer = e.target;
-
-                layer.setStyle({
-                    weight: 5,
-                    color: '#666',
-                    dashArray: '',
-                    fillOpacity: 0.7
-                });
-
-                if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
-                    layer.bringToFront();
-                }
-                
-                info.update(layer.feature.properties);
-            }
-            
-            //reset style after move past state/county
-            function resetHighlight(e) {
-                geojson.resetStyle(e.target);
-                info.update();
-            }
-            
-            function onEachFeature(feature, layer) {
-                layer.on({
-                    mouseover: highlightFeature,
-                    mouseout: resetHighlight,
-                    click: zoomToFeature
-                });
-            }
-            
-            geojson = L.geoJson(data, {
-                style: style,
-                onEachFeature: onEachFeature
-            }).addTo(map);
-            
-            function zoomToFeature(e) {
-                map.fitBounds(e.target.getBounds());
-            }
-
-            // method that we will use to update the control based on feature properties passed
-            info.update = function (props) {
-                this._div.innerHTML = '<h4>Obese Adults</h4>' +  (props ?
-                    '<b>' + props.NAME + '</b><br />' + props.PctAdultsObese19 + '%'
-                    : 'Hover over a state to see percentage');
-            };
             info.addTo(map);
-*/            
 
-///NEW BUTTON FUNCTION CONTROLS   
-            
+
             // setup obesity button click event
             $("#obese").click(function() {
                 // remove the 'active CSS class from all buttons
@@ -203,15 +135,19 @@ function getData(map){
                     map.fitBounds(e.target.getBounds());
                 }
                 
+
                 // method that we will use to update the control based on feature properties passed
                 info.update = function (props, measure) {
+
                     this._div.innerHTML = '<h4>Obese Adults</h4>' +  (props ?
                         '<b>' + props.NAME + '</b><br />' + props.PctAdultsObese19 + '%'
                         : 'Hover over a state to see percentage');
                 };
+
                 info.update()
-            });            
-            
+
+            });
+
             // setup low income button click event
             $("#lowIncome").click(function() {
                 // remove the 'active CSS class from all buttons
@@ -289,15 +225,10 @@ function getData(map){
 
             // trigger the button click for the default view
             $("#obese").trigger('click');
-        }            
+        }
     });
     //call function to create overlays
-    //createOverlays(map);
-    
-    //call NEW FUNCTION TO CREATE OVERLAYS
-    //createNewOverlays(map);
-    
-    createMarkerClusters(map);
+    // createOverlays(map);
     
 
 }//end getData()
@@ -361,6 +292,9 @@ function colorUnits(data, map, style){
 }//End colorUnits()
 */
 
+
+
+
 //// EXAMPLE CODE FOR OVERLAYS
 //Create overlay for most and least urbanized
 function createOverlays(map){
@@ -377,12 +311,12 @@ function createOverlays(map){
         oman                = L.marker([21.512583, 55.923255], {icon: upIcon}).bindPopup('Oman: 67.16%'),
         botswana            = L.marker([-22.328474, 24.684866], {icon: upIcon}).bindPopup('Botswana: 65.64%'),
         saoTome             = L.marker([0.18636, 6.613081], {icon: upIcon}).bindPopup('Sao Tome and Principe: 55.90%'),
-        angola	            = L.marker([-11.202692,17.873887], {icon: upIcon}).bindPopup('Angola:	54.40%'),
-        southKorea	        = L.marker([35.907757, 127.766922], {icon: upIcon}).bindPopup('South Korea: 53.79%'),
-        libya	            = L.marker([26.3351, 17.228331], {icon: upIcon}).bindPopup('Libya:	52.49%'),
-        saudiArabia         = L.marker([23.885942, 45.079162], {icon: upIcon}).bindPopup('Saudi Arabia:	52.37%'),
-        dominicanRepublic	= L.marker([18.735693, -70.162651], {icon: upIcon}).bindPopup('Dominican Republic: 50.09%'),
-        puertoRico	        = L.marker([18.220833, -66.590149], {icon: upIcon}).bindPopup('Puerto Rico: 49.04%');
+        angola              = L.marker([-11.202692,17.873887], {icon: upIcon}).bindPopup('Angola:   54.40%'),
+        southKorea          = L.marker([35.907757, 127.766922], {icon: upIcon}).bindPopup('South Korea: 53.79%'),
+        libya               = L.marker([26.3351, 17.228331], {icon: upIcon}).bindPopup('Libya:  52.49%'),
+        saudiArabia         = L.marker([23.885942, 45.079162], {icon: upIcon}).bindPopup('Saudi Arabia: 52.37%'),
+        dominicanRepublic   = L.marker([18.735693, -70.162651], {icon: upIcon}).bindPopup('Dominican Republic: 50.09%'),
+        puertoRico          = L.marker([18.220833, -66.590149], {icon: upIcon}).bindPopup('Puerto Rico: 49.04%');
     
     //create 'decreasing' icon
     var downIcon = L.icon({
@@ -397,13 +331,13 @@ function createOverlays(map){
         guyana          = L.marker([4.860416, -58.93018], {icon: downIcon}).bindPopup('Guyana: -2.47%'),
         isleOfMan       = L.marker([54.236107, -4.548056], {icon: downIcon}).bindPopup('Isle of Man: -2.67%'),
         stLucia         = L.marker([13.909444, -60.978893], {icon: downIcon}).bindPopup('St. Lucia: -2.85%'),
-        barbados	    = L.marker([13.193887, -59.543198], {icon: downIcon}).bindPopup('Barbados:	-5.62%'),
-        liechtenstein	= L.marker([47.166, 9.555373], {icon: downIcon}).bindPopup('Liechtenstein: -6.12%'),
-        tajikistan	    = L.marker([38.861034, 71.276093], {icon: downIcon}).bindPopup('Tajikistan: -6.19%'),
+        barbados        = L.marker([13.193887, -59.543198], {icon: downIcon}).bindPopup('Barbados:  -5.62%'),
+        liechtenstein   = L.marker([47.166, 9.555373], {icon: downIcon}).bindPopup('Liechtenstein: -6.12%'),
+        tajikistan      = L.marker([38.861034, 71.276093], {icon: downIcon}).bindPopup('Tajikistan: -6.19%'),
         austria         = L.marker([47.516231, 14.550072], {icon: downIcon}).bindPopup('Austria: -6.63%'),
-        aruba	        = L.marker([12.52111, -69.968338], {icon: downIcon}).bindPopup('Aruba: -7.48%'),
-        belize	        = L.marker([17.189877, -88.49765], {icon: downIcon}).bindPopup('Belize: - 8.43%'),
-        antiguaBarbuda	= L.marker([17.060816, -61.796428], {icon: downIcon}).bindPopup('Antigua and Barbuda: -14.94%');    
+        aruba           = L.marker([12.52111, -69.968338], {icon: downIcon}).bindPopup('Aruba: -7.48%'),
+        belize          = L.marker([17.189877, -88.49765], {icon: downIcon}).bindPopup('Belize: - 8.43%'),
+        antiguaBarbuda  = L.marker([17.060816, -61.796428], {icon: downIcon}).bindPopup('Antigua and Barbuda: -14.94%');    
 
         //create layer group to hold the top ten countries
         var top10 = L.layerGroup([gabon, oman, botswana, saoTome, angola, southKorea, libya, saudiArabia, dominicanRepublic, puertoRico]);
@@ -419,102 +353,3 @@ function createOverlays(map){
 
         L.control.layers(null, overlayMaps).addTo(map);
 }//End createOverlays();
-
-
-//Create overlays for dollar store chain
-function createNewOverlays(map){
-    
-    //create Dollar Tree layer
-    var dollarTreeData = 'data/all_DollarTree.geojson';    
-    var dollarTreeStores = L.geoJson(null, {
-            pointToLayer: function(feature, latlng) {		
-				return L.circleMarker(latlng, {
-				radius: 4,
-				opacity: .5,
-                fillColor: 'orange',    
-				fillOpacity: 0.8
-				});
-            },	
-    });
-    
-    //create Dollar General layer
-    var dollarGenData = 'data/all_DollarGeneral.geojson';    
-    var dollarGenStores = L.geoJson(null, {
-            pointToLayer: function(feature, latlng) {		
-				return L.circleMarker(latlng, {
-				radius: 4,
-				opacity: .5,
-                fillColor: 'purple',    
-				fillOpacity: 0.8
-				});
-            },	
-    });
-    
-    //create Family Dollar layer
-    var famDollarData = 'data/all_FamilyDollar.geojson';    
-    var famDollarStores = L.geoJson(null, {
-            pointToLayer: function(feature, latlng) {		
-				return L.circleMarker(latlng, {
-				radius: 4,
-				opacity: .5,
-                fillColor: 'green',    
-				fillOpacity: 0.8
-				});
-            },	
-    });
-    
-    $.getJSON(dollarTreeData, function(dataDT) {
-        return dollarTreeStores.addData(dataDT);
-	});	
-    
-     $.getJSON(dollarGenData, function(dataDG) {
-        return dollarGenStores.addData(dataDG);
-	});
-     
-    $.getJSON(famDollarData, function(dataFD) {
-        return famDollarStores.addData(dataFD);
-	});	
-    
-    var overlays = {
-        "Dollar Tree": dollarTreeStores,
-        "Dollar General": dollarGenStores,
-        "Family Dollar": famDollarStores
-    };
-    
-    L.control.layers(null, overlays).addTo(map);
-	//});
-    
-}
-
-
-//MAKING MARKER CLUSTERS
-
-    var dollarTreeData = 'data/all_DollarTree.geojson';    
-    var dollarTreeStores = L.geoJson(null, {
-            pointToLayer: function(feature, latlng) {		
-				return L.circleMarker(latlng, {
-				radius: 4,
-				opacity: .5,
-                fillColor: 'orange',    
-				fillOpacity: 0.8
-				});
-            },	
-    });
-    
-    $.getJSON(dollarTreeData, function(dataDT) {
-        return dollarTreeStores.addData(dataDT);
-	});	
-    
-//var markers = dollarTreeStores;
-
-function createMarkerClusters(map){
-		var markers = L.markerClusterGroup();
- 		
-		for (var i = 0; i < addressPoints.length; i++) {
-			var a = addressPoints[i];
-			var marker = L.marker(new L.LatLng(a[0], a[1]));
-			markers.addLayer(marker);
-		}
-
-		map.addLayer(markers);
-}
