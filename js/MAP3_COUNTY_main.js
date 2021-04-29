@@ -1,4 +1,4 @@
-/* Main.js for Geog575 Final Project, Dollar Chains; Author:Cherie Bryant, 2021*/
+/* MAP3_COUNTY_main.js for Geog575 Final Project, MAP 3 - STATES - Dollar Chains; April 2021*/
 
 //Instantiate the Leaflet map
 function createMap(){
@@ -31,13 +31,13 @@ function getData(map){
         success: function(data){
  
             function getColor(d) {
-                return  d > 40 ? '#800026' :
-                        d > 35  ? '#BD0026' :
-                        d > 30  ? '#E31A1C' :
-                        d > 25  ? '#FC4E2A' :
-                        d > 20   ? '#FD8D3C' :
-                        d > 15   ? '#FEB24C' :
-                        d > 10   ? '#FED976' :
+                return  d > 60  ? '#800026' :
+                        d > 45  ? '#BD0026' :
+                        //d > 50  ? '#E31A1C' :
+                        d > 30  ? '#FC4E2A' :
+                        d > 20  ? '#FD8D3C' :
+                        //d > 20  ? '#FEB24C' :
+                        d > 10  ? '#FED976' :
                         '#FFEDA0';
             } //end getColor()
             
@@ -46,7 +46,7 @@ function getData(map){
             var legend = L.control({position: 'bottomright'});
             legend.onAdd = function (map) {
                 var div = L.DomUtil.create('div', 'info legend'),
-                    grades = [0, 10, 15, 20, 25, 30, 35, 40],
+                    grades = [0, 10, 20, 30, 45, 60],
                     labels = [];
 
                 // loop through our density intervals and generate a label with a colored square for each interval
@@ -83,24 +83,12 @@ function getData(map){
                 // add 'active' class to the clicked button
                 $(this).addClass('active');
 
-                function getColorObese(d) {
-                    return  d > 40 ? '#800026' :
-                            d > 35 ? '#BD0026' :
-                            d > 30 ? '#E31A1C' :
-                            d > 25 ? '#FC4E2A' :
-                            d > 20 ? '#FD8D3C' :
-                            d > 15 ? '#FEB24C' :
-                            d > 10 ? '#FED976' :
-                            '#FFEDA0';
-                } //end getColor()
             
-                
-                
                 //style the choropleth units
                 function style(feature) {
                     return {
-                        fillColor: getColorObese(Number(feature.properties[attribute])),
-                        weight: 2,
+                        fillColor: getColor(Number(feature.properties[attribute])),
+                        weight: 1,
                         opacity: 1,
                         color: 'white',
                         strokecolor: "#000000",
@@ -157,8 +145,9 @@ function getData(map){
                 // method that we will use to update the control based on feature properties passed
                 info.update = function (props, measure) {
                     this._div.innerHTML = '<h4>Obese Adults</h4>' +  (props ?
-                        '<b>' + props.NAME + '</b><br />' + props[attribute] + '% of adults'
-                        : 'Hover over a state to see percentage of total');
+                        '<b>' + props.County + ' County,' + props.State + '</b><br />' + props[attribute] + '% of adults'
+                        : 'Hover over a state to see percentage of total'
+                                                                     );
                 };
                 info.update()
             });            
@@ -178,7 +167,7 @@ function getData(map){
                 function style(feature) {
                     return {
                         fillColor: getColor(Number(feature.properties[attribute])),
-                        weight: 2,
+                        weight: 1,
                         opacity: 1,
                         color: 'white',
                         strokecolor: "#000000",
@@ -234,7 +223,7 @@ function getData(map){
                 info.update = function (props, measure) {
 
                     this._div.innerHTML = '<h4>Low-Income Households</h4>' +  (props ?
-                        '<b>' + props.NAME + '</b><br />' + props[attribute] + '% of households'
+                        '<b>' + props.County + ' County,' + props.State + '</b><br />' + props[attribute] + '% of households'
                         : 'Hover over a state to see percentage of total');
                 };
                 info.update()
@@ -255,7 +244,7 @@ function getData(map){
                 function style(feature) {
                     return {
                         fillColor: getColor(Number(feature.properties[attribute])),
-                        weight: 2,
+                        weight: 1,
                         opacity: 1,
                         color: 'white',
                         strokecolor: "#000000",
@@ -311,7 +300,7 @@ function getData(map){
                 info.update = function (props, measure) {
 
                     this._div.innerHTML = '<h4>Car-Free Households</h4>' +  (props ?
-                        '<b>' + props.NAME + '</b><br />' + props[attribute] + '% of households'
+                        '<b>' + props.County + ' County,' + props.State + '</b><br />' + props[attribute] + '% of households'
                         : 'Hover over a state to see percentage of total');
                 };
                 info.update()
@@ -332,7 +321,7 @@ function getData(map){
                 function style(feature) {
                     return {
                         fillColor: getColor(Number(feature.properties[attribute])),
-                        weight: 2,
+                        weight: 1,
                         opacity: 1,
                         color: 'white',
                         strokecolor: "#000000",
@@ -388,7 +377,7 @@ function getData(map){
                 info.update = function (props, measure) {
 
                     this._div.innerHTML = '<h4>Diabetic Adults</h4>' +  (props ?
-                        '<b>' + props.NAME + '</b><br />' + props[attribute] + '% of adults'
+                        '<b>' + props.County + ' County,' + props.State + '</b><br />' + props[attribute] + '% of adults'
                         : 'Hover over a state to see percentage of adults');
                 };
                 info.update()
@@ -409,7 +398,7 @@ function getData(map){
                 function style(feature) {
                     return {
                         fillColor: getColor(Number(feature.properties[attribute])),
-                        weight: 2,
+                        weight: 1,
                         opacity: 1,
                         color: 'white',
                         strokecolor: "#000000",
@@ -465,7 +454,7 @@ function getData(map){
                 info.update = function (props, measure) {
 
                     this._div.innerHTML = '<h4>Combined Poverty Score</h4>' +  (props ?
-                        '<b>' + props.NAME + '</b><br />' + props[attribute] + '% of population'
+                        '<b>' + props.County + ' County,' + props.State + '</b><br />' + props[attribute] + '% of population'
                         : 'Hover over a state to see percentage');
                 };
                 info.update()
@@ -496,8 +485,8 @@ $(document).ready(createMap);
 function createMarkerClusters(map){
 		var markers = L.markerClusterGroup();
  		
-		for (var i = 0; i < addressPoints.length; i++) {
-			var a = addressPoints[i];
+		for (var i = 0; i < allStorePoints.length; i++) {
+			var a = allStorePoints[i];
 			var marker = L.marker(new L.LatLng(a[0], a[1]));
 			markers.addLayer(marker);
 		}

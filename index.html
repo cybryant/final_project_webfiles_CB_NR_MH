@@ -1,4 +1,5 @@
-<!-- Index.html for map of GeoJSON data for Change in Urbanization, 1960-2017; Author:Cherie Bryant, 2021-->
+<!-- Index.html MAP 3 - Dollar Chains Final Project, April 2021-->
+<!-- SET TO RUN STATE MAP (js/MAP3_STATE_main.js), BUT SCRIPT FOR COUNTY VERSION IS COMMENTED OUT AT END-->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -7,7 +8,6 @@
 		<meta name="viewport" content="width=device-width">
 		<title>Dollar Chains</title>
 
-        
         <!--leaflet tutorial stylesheet reference-->
          <link rel="stylesheet"             href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
             integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
@@ -18,13 +18,7 @@
         <link rel="stylesheet" href="css/MarkerCluster.Default.css">
         <link rel="stylesheet" href="css/MarkerCluster.css">
         <link rel="stylesheet" href="css/style.css">      
-        <!--IF ADD SEARCH BUTTON, activate-->
-            <!--<link href='https://api.mapbox.com/mapbox.js/v3.3.1/mapbox.css' rel='stylesheet' />-->            
-            <!--<link rel="stylesheet" href="css/leaflet-search.css">-->         
 
-		<!--[if IE<9]>
-			<link rel="stylesheet" href="css/style.ie.css">
-		<![endif]-->
 	</head>
 
 	<body>
@@ -44,15 +38,11 @@
     </div>        
             
         <div>
-            <h4>Text</h4>
 
-            <h5>text</h5>
+            <h5>Circles represent number of dollar stores within the blue highlighted area. Hover over a circle to activate the highlight.  Click the circle to zoom into that area for greater detail.</h5>
 
-            <h6>Map Data Source: </h6>
         </div>
         
-        <!--you can also use this space for internal scripts or stylesheets;
-		place these within <script> or <style> tags-->
 
         <!--leaflet script reference--> 
          <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
@@ -60,15 +50,17 @@
             crossorigin=""></script>
         
 		<!--put your external script links here-->
-        
         <script src='https://api.mapbox.com/mapbox.js/v3.3.1/mapbox.js'></script>
         <script type="text/javascript" src="lib/jquery-3.5.1.js"></script>
         <script type="text/javascript" src="lib/leaflet-src.js"></script>
         <script type="text/javascript" src="lib/leaflet.markercluster-src.js"></script>
-        <script src="data/testStores.js"></script>
-        <!--IF ADD SEARCH BUTTON, activate-->
-            <!--<script type="text/javascript" src="js/leaflet-search.js"></script>-->  
-        <script type="text/javascript" src="js/main.js"></script>
+        <script src="data/allStorePoints.js"></script>
         
+        
+        <!--THIS PAGE IS EXACTLY THE SAME FOR MAP3-STATE & MAP3-COUNTY EXCEPT FOR THIS LINE; COMMENTED OUT THE COUNTY ONE BELOW-->
+        <!--<script type="text/javascript" src="js/MAP3_STATE_main.js"></script>-->
+        
+        <script type="text/javascript" src="js/MAP3_COUNTY_main.js"></script>
+
 	</body>
 </html>
