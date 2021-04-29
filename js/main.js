@@ -26,7 +26,7 @@ function createMap(){
 //Retrieve the GeoJSON data and place it on the map
 function getData(map){
     //load the data
-    $.ajax("data/merge_states_5indicators.geojson", {
+    $.ajax("data/counties_indicators.geojson", {
         dataType: "json",
         success: function(data){
  
@@ -64,93 +64,42 @@ function getData(map){
             var info = L.control();
             info.onAdd = function (map) {
                 this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
-                //this.update(); (COMMENTED OUT BY NICK)
+                //this.update(); //this line removed from Leaflet tutorial example
                 return this._div;
             };
             
-            info.addTo(map); //ADDED IN BY NICK
+            info.addTo(map); //this line added to the Leaflet tutorial example
 
-//THIS IS ALL MOVING INTO THE BUTTON FUNCTIONS, BUT KEEPING HERE SO I CAN GO BACK AND CREATE A SINGLE FUNCTION INSTEAD OF COPYING 5 TIMES
-/*
-            //style the choropleth units
-            function style(feature) {
-                return {
-                    fillColor: getColor(Number(feature.properties.PctAdultsObese19)),
-                    weight: 2,
-                    opacity: 1,
-                    color: 'white',
-                    strokecolor: "#000000",
-                    dashArray: '3',
-                    fillOpacity: 0.7
-                };
-            } //end style()
-            
-            var geojson;
-            
-            //create highlight of state/county when hover
-            function highlightFeature(e) {
-                var layer = e.target;
 
-                layer.setStyle({
-                    weight: 5,
-                    color: '#666',
-                    dashArray: '',
-                    fillOpacity: 0.7
-                });
-
-                if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
-                    layer.bringToFront();
-                }
-                
-                info.update(layer.feature.properties);
-            }
+//BUTTON FUNCTION CONTROLS   
             
-            //reset style after move past state/county
-            function resetHighlight(e) {
-                geojson.resetStyle(e.target);
-                info.update();
-            }
-            
-            function onEachFeature(feature, layer) {
-                layer.on({
-                    mouseover: highlightFeature,
-                    mouseout: resetHighlight,
-                    click: zoomToFeature
-                });
-            }
-            
-            geojson = L.geoJson(data, {
-                style: style,
-                onEachFeature: onEachFeature
-            }).addTo(map);
-            
-            function zoomToFeature(e) {
-                map.fitBounds(e.target.getBounds());
-            }
-
-            // method that we will use to update the control based on feature properties passed
-            info.update = function (props) {
-                this._div.innerHTML = '<h4>Obese Adults</h4>' +  (props ?
-                    '<b>' + props.NAME + '</b><br />' + props.PctAdultsObese19 + '%'
-                    : 'Hover over a state to see percentage');
-            };
-            info.addTo(map);
-*/            
-
-///NEW BUTTON FUNCTION CONTROLS   
-            
-            // setup obesity button click event
+            // setup OBESITY button click event
             $("#obese").click(function() {
                 // remove the 'active CSS class from all buttons
                 $('.btn-group button').removeClass('active');
+                
+                 var attribute = ["Obese"];               
 
                 // add 'active' class to the clicked button
                 $(this).addClass('active');
 
+                function getColorObese(d) {
+                    return  d > 40 ? '#800026' :
+                            d > 35 ? '#BD0026' :
+                            d > 30 ? '#E31A1C' :
+                            d > 25 ? '#FC4E2A' :
+                            d > 20 ? '#FD8D3C' :
+                            d > 15 ? '#FEB24C' :
+                            d > 10 ? '#FED976' :
+                            '#FFEDA0';
+                } //end getColor()
+            
+                
+                
                 //style the choropleth units
                 function style(feature) {
                     return {
-                        fillColor: getColor(Number(feature.properties.PctAdultsObese19)),
+                        fillColor: getColorObese(Number(feature.properties[attribute])),
                         weight: 2,
                         opacity: 1,
                         color: 'white',
@@ -202,20 +151,25 @@ function getData(map){
                 function zoomToFeature(e) {
                     map.fitBounds(e.target.getBounds());
                 }
+                
+                //buttonOperator(map, data, attribute); //NOT WORKING YET
                 
                 // method that we will use to update the control based on feature properties passed
                 info.update = function (props, measure) {
                     this._div.innerHTML = '<h4>Obese Adults</h4>' +  (props ?
-                        '<b>' + props.NAME + '</b><br />' + props.PctAdultsObese19 + '%'
-                        : 'Hover over a state to see percentage');
+                        '<b>' + props.NAME + '</b><br />' + props[attribute] + '% of adults'
+                        : 'Hover over a state to see percentage of total');
                 };
                 info.update()
             });            
             
-            // setup low income button click event
+            
+            // setup LOW-INCOME button click event
             $("#lowIncome").click(function() {
                 // remove the 'active CSS class from all buttons
                 $('.btn-group button').removeClass('active');
+                
+                var attribute = ["Low-Income Households"]
 
                 // add 'active' class to the clicked button
                 $(this).addClass('active');
@@ -223,7 +177,7 @@ function getData(map){
                 //style the choropleth units
                 function style(feature) {
                     return {
-                        fillColor: getColor(Number(feature.properties.PCT_LACCESS_LOWI15)),
+                        fillColor: getColor(Number(feature.properties[attribute])),
                         weight: 2,
                         opacity: 1,
                         color: 'white',
@@ -279,150 +233,355 @@ function getData(map){
                 // method that we will use to update the control based on feature properties passed
                 info.update = function (props, measure) {
 
-                    this._div.innerHTML = '<h4>Low-income households</h4>' +  (props ?
-                        '<b>' + props.NAME + '</b><br />' + props.PCT_LACCESS_LOWI15 + '%'
+                    this._div.innerHTML = '<h4>Low-Income Households</h4>' +  (props ?
+                        '<b>' + props.NAME + '</b><br />' + props[attribute] + '% of households'
+                        : 'Hover over a state to see percentage of total');
+                };
+                info.update()
+
+            });
+            
+            // setup CAR-FREE button click event
+            $("#carFree").click(function() {
+                // remove the 'active CSS class from all buttons
+                $('.btn-group button').removeClass('active');
+                
+                var attribute = ["Car-Free Households"]; 
+
+                // add 'active' class to the clicked button
+                $(this).addClass('active');
+
+                //style the choropleth units
+                function style(feature) {
+                    return {
+                        fillColor: getColor(Number(feature.properties[attribute])),
+                        weight: 2,
+                        opacity: 1,
+                        color: 'white',
+                        strokecolor: "#000000",
+                        dashArray: '3',
+                        fillOpacity: 0.7
+                    };
+                } //end style()
+                
+                var geojson;
+                
+                //create highlight of state/county when hover
+                function highlightFeature(e) {
+                    var layer = e.target;
+
+                    layer.setStyle({
+                        weight: 5,
+                        color: '#666',
+                        dashArray: '',
+                        fillOpacity: 0.7
+                    });
+
+                    if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                        layer.bringToFront();
+                    }
+                    
+                    info.update(layer.feature.properties);
+                }
+                
+                //reset style after move past state/county
+                function resetHighlight(e) {
+                    geojson.resetStyle(e.target);
+                    info.update();
+                }
+                
+                function onEachFeature(feature, layer) {
+                    layer.on({
+                        mouseover: highlightFeature,
+                        mouseout: resetHighlight,
+                        click: zoomToFeature
+                    });
+                }
+                
+                geojson = L.geoJson(data, {
+                    style: style,
+                    onEachFeature: onEachFeature
+                }).addTo(map);
+                
+                function zoomToFeature(e) {
+                    map.fitBounds(e.target.getBounds());
+                }
+
+                // method that we will use to update the control based on feature properties passed
+                info.update = function (props, measure) {
+
+                    this._div.innerHTML = '<h4>Car-Free Households</h4>' +  (props ?
+                        '<b>' + props.NAME + '</b><br />' + props[attribute] + '% of households'
+                        : 'Hover over a state to see percentage of total');
+                };
+                info.update()
+
+            });            
+ 
+            // setup DIABETES button click event
+            $("#diabetes").click(function() {
+                // remove the 'active CSS class from all buttons
+                $('.btn-group button').removeClass('active');
+                
+                var attribute = ["Diabetes"]; 
+
+                // add 'active' class to the clicked button
+                $(this).addClass('active');
+
+                //style the choropleth units
+                function style(feature) {
+                    return {
+                        fillColor: getColor(Number(feature.properties[attribute])),
+                        weight: 2,
+                        opacity: 1,
+                        color: 'white',
+                        strokecolor: "#000000",
+                        dashArray: '3',
+                        fillOpacity: 0.7
+                    };
+                } //end style()
+                
+                var geojson;
+                
+                //create highlight of state/county when hover
+                function highlightFeature(e) {
+                    var layer = e.target;
+
+                    layer.setStyle({
+                        weight: 5,
+                        color: '#666',
+                        dashArray: '',
+                        fillOpacity: 0.7
+                    });
+
+                    if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                        layer.bringToFront();
+                    }
+                    
+                    info.update(layer.feature.properties);
+                }
+                
+                //reset style after move past state/county
+                function resetHighlight(e) {
+                    geojson.resetStyle(e.target);
+                    info.update();
+                }
+                
+                function onEachFeature(feature, layer) {
+                    layer.on({
+                        mouseover: highlightFeature,
+                        mouseout: resetHighlight,
+                        click: zoomToFeature
+                    });
+                }
+                
+                geojson = L.geoJson(data, {
+                    style: style,
+                    onEachFeature: onEachFeature
+                }).addTo(map);
+                
+                function zoomToFeature(e) {
+                    map.fitBounds(e.target.getBounds());
+                }
+
+                // method that we will use to update the control based on feature properties passed
+                info.update = function (props, measure) {
+
+                    this._div.innerHTML = '<h4>Diabetic Adults</h4>' +  (props ?
+                        '<b>' + props.NAME + '</b><br />' + props[attribute] + '% of adults'
+                        : 'Hover over a state to see percentage of adults');
+                };
+                info.update()
+
+            });            
+
+            // setup COMBINED SCORE button click event 
+            $("#combinedScore").click(function() {
+                // remove the 'active CSS class from all buttons
+                $('.btn-group button').removeClass('active');
+                
+                var attribute = ["Combined Score"]; 
+
+                // add 'active' class to the clicked button
+                $(this).addClass('active');
+
+                //style the choropleth units
+                function style(feature) {
+                    return {
+                        fillColor: getColor(Number(feature.properties[attribute])),
+                        weight: 2,
+                        opacity: 1,
+                        color: 'white',
+                        strokecolor: "#000000",
+                        dashArray: '3',
+                        fillOpacity: 0.7
+                    };
+                } //end style()
+                
+                var geojson;
+                
+                //create highlight of state/county when hover
+                function highlightFeature(e) {
+                    var layer = e.target;
+
+                    layer.setStyle({
+                        weight: 5,
+                        color: '#666',
+                        dashArray: '',
+                        fillOpacity: 0.7
+                    });
+
+                    if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                        layer.bringToFront();
+                    }
+                    
+                    info.update(layer.feature.properties);
+                }
+                
+                //reset style after move past state/county
+                function resetHighlight(e) {
+                    geojson.resetStyle(e.target);
+                    info.update();
+                }
+                
+                function onEachFeature(feature, layer) {
+                    layer.on({
+                        mouseover: highlightFeature,
+                        mouseout: resetHighlight,
+                        click: zoomToFeature
+                    });
+                }
+                
+                geojson = L.geoJson(data, {
+                    style: style,
+                    onEachFeature: onEachFeature
+                }).addTo(map);
+                
+                function zoomToFeature(e) {
+                    map.fitBounds(e.target.getBounds());
+                }
+
+                // method that we will use to update the control based on feature properties passed
+                info.update = function (props, measure) {
+
+                    this._div.innerHTML = '<h4>Combined Poverty Score</h4>' +  (props ?
+                        '<b>' + props.NAME + '</b><br />' + props[attribute] + '% of population'
                         : 'Hover over a state to see percentage');
                 };
                 info.update()
 
             });
-
+            
+            
             // trigger the button click for the default view
             $("#obese").trigger('click');
         }            
     });
-    //call function to create overlays
-    //createOverlays(map);
     
-    //call NEW FUNCTION TO CREATE OVERLAYS
-    //createNewOverlays(map);
-    
+    //call function to create Marker Clusters
     createMarkerClusters(map);
     
+    //call function to create overlays - NOT ACTIVE
+    //createOverlays(map);
+    
+    //call function to define button operations - NOT FULLY WORKING
+    //function buttonOperator(map, data, attribute)
 
 }//end getData()
 
-
 $(document).ready(createMap);
 
-/*
-//FINAL MAP VARIABLES ARE ALL PERCENTAGES, SO SCALE COULD BE THE SAME FOR ALL, DEPENDING ON HOW THE DATA IS SPREAD OUT
-//create a color scale for choropleth units 
-function getColor(d) {
-    return  d > 250 ? '#800026' :
-            d > 200  ? '#BD0026' :
-            d > 150  ? '#E31A1C' :
-            d > 125  ? '#FC4E2A' :
-            d > 100   ? '#FD8D3C' :
-            d > 50   ? '#FEB24C' :
-            d > 25   ? '#FED976' :
+
+//creates Marker Clusters
+function createMarkerClusters(map){
+		var markers = L.markerClusterGroup();
+ 		
+		for (var i = 0; i < addressPoints.length; i++) {
+			var a = addressPoints[i];
+			var marker = L.marker(new L.LatLng(a[0], a[1]));
+			markers.addLayer(marker);
+		}
+
+		map.addLayer(markers);
+} //end createMarkerClusters
+
+
+//function to remove duplication of button actions - NEED TO FIGURE OUT HOW TO ADAPT 'e.target' TO WORK OUTSIDE OF SPECIFIC BUTTON FUNCTIONS
+/*function buttonOperator(map, data, attribute){
+    // add 'active' class to the clicked button
+    $(this).addClass('active');  
+    
+    function getColor(d) {
+    return  d > 40 ? '#800026' :
+            d > 35  ? '#BD0026' :
+            d > 30  ? '#E31A1C' :
+            d > 25  ? '#FC4E2A' :
+            d > 20   ? '#FD8D3C' :
+            d > 15   ? '#FEB24C' :
+            d > 10   ? '#FED976' :
             '#FFEDA0';
-} //end getColor()
-*/
-
-/*
-//style the lowIncome choropleth units
-function style_lowIncome(feature) {
-    return {
-        fillColor: getColor(Number(feature.properties.lowIncome)),
-        weight: 2,
-        opacity: 1,
-        color: 'white',
-        strokecolor: "#000000",
-        dashArray: '3',
-        fillOpacity: 0.7
-    };
-} //end style_lowIncome()
-*/
-
-/*
-//style the choropleth units
-function style(feature) {
-    return {
-        fillColor: getColor(Number(feature.properties.var3)),
-        weight: 2,
-        opacity: 1,
-        color: 'white',
-        strokecolor: "#000000",
-        dashArray: '3',
-        fillOpacity: 0.7
-    };
-} //end style_carFree()
-
-
-//shade lowIncome choropleth units
-//$("#lowIncome").click(function (data, map, style){
-//    L.geoJson(data, {style: style_lowIncome}).addTo(map);  
-//})
-
-//shade carFree choropleth units
-function colorUnits(data, map, style){
-    L.geoJson(data, {style: style}).addTo(map);  
-}//End colorUnits()
-*/
-
-//// EXAMPLE CODE FOR OVERLAYS
-//Create overlay for most and least urbanized
-function createOverlays(map){
-    //create 'increasing' icon
-    var upIcon = L.icon({
-        iconUrl: 'img/green_pin.png',
-        iconSize:     [25, 40], // size of the icon
-        iconAnchor:   [12, 40], // point of the icon which will correspond to marker's location
-        popupAnchor:  [20, -40] // point from which the popup should open relative to the iconAnchor
-    });
-
-    //variables for top ten urbanized countries
-    var gabon               = L.marker([-0.803689, 11.609444], {icon: upIcon}).bindPopup('Gabon: 71.58%'),
-        oman                = L.marker([21.512583, 55.923255], {icon: upIcon}).bindPopup('Oman: 67.16%'),
-        botswana            = L.marker([-22.328474, 24.684866], {icon: upIcon}).bindPopup('Botswana: 65.64%'),
-        saoTome             = L.marker([0.18636, 6.613081], {icon: upIcon}).bindPopup('Sao Tome and Principe: 55.90%'),
-        angola	            = L.marker([-11.202692,17.873887], {icon: upIcon}).bindPopup('Angola:	54.40%'),
-        southKorea	        = L.marker([35.907757, 127.766922], {icon: upIcon}).bindPopup('South Korea: 53.79%'),
-        libya	            = L.marker([26.3351, 17.228331], {icon: upIcon}).bindPopup('Libya:	52.49%'),
-        saudiArabia         = L.marker([23.885942, 45.079162], {icon: upIcon}).bindPopup('Saudi Arabia:	52.37%'),
-        dominicanRepublic	= L.marker([18.735693, -70.162651], {icon: upIcon}).bindPopup('Dominican Republic: 50.09%'),
-        puertoRico	        = L.marker([18.220833, -66.590149], {icon: upIcon}).bindPopup('Puerto Rico: 49.04%');
+    } //end getColor()
     
-    //create 'decreasing' icon
-    var downIcon = L.icon({
-        iconUrl: 'img/red_pin.png',
-        iconSize:     [25, 40], // size of the icon
-        iconAnchor:   [12, 40], // point of the icon which will correspond to marker's location
-        popupAnchor:  [20, -40] // point from which the popup should open relative to the iconAnchor
-    });    
-    
-    //variables for negative percentage change urbanized countries
-    var samoa           = L.marker([-13.759029, -172.104629], {icon: downIcon}).bindPopup('Samoa: -0.47%'),
-        guyana          = L.marker([4.860416, -58.93018], {icon: downIcon}).bindPopup('Guyana: -2.47%'),
-        isleOfMan       = L.marker([54.236107, -4.548056], {icon: downIcon}).bindPopup('Isle of Man: -2.67%'),
-        stLucia         = L.marker([13.909444, -60.978893], {icon: downIcon}).bindPopup('St. Lucia: -2.85%'),
-        barbados	    = L.marker([13.193887, -59.543198], {icon: downIcon}).bindPopup('Barbados:	-5.62%'),
-        liechtenstein	= L.marker([47.166, 9.555373], {icon: downIcon}).bindPopup('Liechtenstein: -6.12%'),
-        tajikistan	    = L.marker([38.861034, 71.276093], {icon: downIcon}).bindPopup('Tajikistan: -6.19%'),
-        austria         = L.marker([47.516231, 14.550072], {icon: downIcon}).bindPopup('Austria: -6.63%'),
-        aruba	        = L.marker([12.52111, -69.968338], {icon: downIcon}).bindPopup('Aruba: -7.48%'),
-        belize	        = L.marker([17.189877, -88.49765], {icon: downIcon}).bindPopup('Belize: - 8.43%'),
-        antiguaBarbuda	= L.marker([17.060816, -61.796428], {icon: downIcon}).bindPopup('Antigua and Barbuda: -14.94%');    
-
-        //create layer group to hold the top ten countries
-        var top10 = L.layerGroup([gabon, oman, botswana, saoTome, angola, southKorea, libya, saudiArabia, dominicanRepublic, puertoRico]);
-    
-        //create layer group to hold the negative countries
-        var negativeUrban = L.layerGroup([samoa, guyana, isleOfMan, stLucia, barbados, liechtenstein, tajikistan, austria, aruba, belize, antiguaBarbuda]);
-
-        //create overlay controls
-        var overlayMaps = {
-            "Top 10 Most Urbanized Countries, 1960 to 2017": top10,
-            "Countries with Negative Urbanization, 1960 to 2017": negativeUrban
+    //style the choropleth units
+    function style(feature) {
+        return {
+            fillColor: getColor(Number(feature.properties[attribute])),
+            weight: 2,
+            opacity: 1,
+            color: 'white',
+            strokecolor: "#000000",
+            dashArray: '3',
+            fillOpacity: 0.7
         };
+    } //end style()
 
-        L.control.layers(null, overlayMaps).addTo(map);
-}//End createOverlays();
+    var geojson;
 
+    //create highlight of state/county when hover
+    function highlightFeature(e) {
+        var layer = e.target;
 
-//Create overlays for dollar store chain
-function createNewOverlays(map){
+        layer.setStyle({
+            weight: 5,
+            color: '#666',
+            dashArray: '',
+            fillOpacity: 0.7
+        });
+
+        if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+            layer.bringToFront();
+        }
+
+        info.update(layer.feature.properties);
+    }
+
+    //reset style after move past state/county
+    function resetHighlight(e) {
+        geojson.resetStyle(e.target);
+        info.update();
+    }
+
+    function onEachFeature(feature, layer) {
+        layer.on({
+            mouseover: highlightFeature,
+            mouseout: resetHighlight,
+            click: zoomToFeature
+        });
+    }
+
+    geojson = L.geoJson(data, {
+        style: style,
+        onEachFeature: onEachFeature
+    }).addTo(map);
+
+    function zoomToFeature(e) {
+        map.fitBounds(e.target.getBounds());
+    }
+} //end buttonOperator()
+*/
+
+//Create overlays for dollar store chain - WORKS BUT NOT USING. ALSO NEED TO RESOLVE STATE/COUNTY FILL COVERING MARKERS ON RESTYLE AFTER HOVER EVENT
+/*function createOverlays(map){
     
     //create Dollar Tree layer
     var dollarTreeData = 'data/all_DollarTree.geojson';    
@@ -482,39 +641,7 @@ function createNewOverlays(map){
     };
     
     L.control.layers(null, overlays).addTo(map);
-	//});
+	//});   
+} end createOverlays
+*/
     
-}
-
-
-//MAKING MARKER CLUSTERS
-
-    var dollarTreeData = 'data/all_DollarTree.geojson';    
-    var dollarTreeStores = L.geoJson(null, {
-            pointToLayer: function(feature, latlng) {		
-				return L.circleMarker(latlng, {
-				radius: 4,
-				opacity: .5,
-                fillColor: 'orange',    
-				fillOpacity: 0.8
-				});
-            },	
-    });
-    
-    $.getJSON(dollarTreeData, function(dataDT) {
-        return dollarTreeStores.addData(dataDT);
-	});	
-    
-//var markers = dollarTreeStores;
-
-function createMarkerClusters(map){
-		var markers = L.markerClusterGroup();
- 		
-		for (var i = 0; i < addressPoints.length; i++) {
-			var a = addressPoints[i];
-			var marker = L.marker(new L.LatLng(a[0], a[1]));
-			markers.addLayer(marker);
-		}
-
-		map.addLayer(markers);
-}
